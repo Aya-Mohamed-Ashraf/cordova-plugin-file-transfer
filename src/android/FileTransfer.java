@@ -45,7 +45,7 @@ import org.apache.cordova.CordovaResourceApi.OpenForReadResult;
 import org.apache.cordova.LOG;
 import org.apache.cordova.PluginManager;
 import org.apache.cordova.PluginResult;
-import org.apache.cordova.Whitelist;
+import org.apache.cordova.AllowList;
 import org.apache.cordova.file.FileUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -677,24 +677,24 @@ public class FileTransfer extends CordovaPlugin {
         }
 
         /* This code exists for compatibility between 3.x and 4.x versions of Cordova.
-         * Previously the CordovaWebView class had a method, getWhitelist, which would
-         * return a Whitelist object. Since the fixed whitelist is removed in Cordova 4.x,
-         * the correct call now is to shouldAllowRequest from the plugin manager.
-         */
-        Boolean shouldAllowRequest = null;
-        if (isLocalTransfer) {
-            shouldAllowRequest = true;
-        }
-        if (shouldAllowRequest == null) {
-            try {
-                Method gwl = webView.getClass().getMethod("getWhitelist");
-                Whitelist whitelist = (Whitelist)gwl.invoke(webView);
-                shouldAllowRequest = whitelist.isUrlWhiteListed(source);
-            } catch (NoSuchMethodException e) {
-            } catch (IllegalAccessException e) {
-            } catch (InvocationTargetException e) {
-            }
-        }
+       * Previously the CordovaWebView class had a method, getWhitelist, which would
+       * return a Whitelist object. Since the fixed whitelist is removed in Cordova 4.x,
+       * the correct call now is to shouldAllowRequest from the plugin manager.
+       */
+      Boolean shouldAllowRequest = null;
+      if (isLocalTransfer) {
+          shouldAllowRequest = true;
+      }
+      if (shouldAllowRequest == null) {
+          try {
+              Method gwl = webView.getClass().getMethod("getWhitelist");
+              AllowList whitelist = (AllowList)gwl.invoke(webView);
+              shouldAllowRequest = whitelist.isUrlAllowListed(source);
+          } catch (NoSuchMethodException e) {
+          } catch (IllegalAccessException e) {
+          } catch (InvocationTargetException e) {
+          }
+      }
         if (shouldAllowRequest == null) {
             try {
                 Method gpm = webView.getClass().getMethod("getPluginManager");
